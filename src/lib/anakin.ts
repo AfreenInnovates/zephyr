@@ -75,6 +75,52 @@ export async function runWire(
   throw new Error(`Wire ${actionId} timed out`);
 }
 
+// ---- Website Monitoring ----------------------------------------------------
+
+/** Register a page monitor (watches for changes). Returns the monitor id. */
+export async function createMonitor(
+  url: string,
+  name: string,
+  intervalMinutes = 1440,
+): Promise<string> {
+  const res = await fetch("https://api.anakin.io/v1/monitors", {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({ url, name, intervalMinutes, useBrowser: true, aiMode: true }),
+  });
+  if (!res.ok) throw new Error(`monitor create failed: ${res.status}`);
+  const data = (await res.json()) as { id?: string };
+  return String(data.id ?? "");
+}
+
+// ---- Search API (synchronous AI web search) --------------------------------
+
+export type SearchResult = {
+  title: string;
+  url: string;
+  snippet: string;
+  lastUpdated?: string;
+};
+
+/** AI web search — returns cited results immediately (no polling). */
+export async function searchWeb(prompt: string, limit = 8): Promise<SearchResult[]> {
+  const res = await fetch("https://api.anakin.io/v1/search", {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({ prompt, limit }),
+  });
+  if (!res.ok) throw new Error(`search failed: ${res.status}`);
+  const data = (await res.json()) as { results?: Array<Record<string, unknown>> };
+  return (data.results ?? [])
+    .map((r) => ({
+      title: String(r.title ?? ""),
+      url: String(r.url ?? ""),
+      snippet: String(r.snippet ?? ""),
+      lastUpdated: r.last_updated ? String(r.last_updated) : undefined,
+    }))
+    .filter((r) => r.url && r.title);
+}
+
 // ---- Typed helpers ---------------------------------------------------------
 
 export type GeoResult = {

@@ -144,6 +144,22 @@ body {
   }
 }
 
+/* Route-transition curtain */
+@keyframes routeFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes routeBarSweep {
+  0% { transform: translateX(-130%); }
+  100% { transform: translateX(360%); }
+}
+.route-loader {
+  animation: routeFadeIn 0.18s ease-out both;
+}
+.route-bar {
+  animation: routeBarSweep 0.9s ease-in-out infinite;
+}
+
 .reveal {
   opacity: 0;
 }

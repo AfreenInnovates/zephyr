@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bayon, Manrope, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import IntroLoader from "@/components/IntroLoader";
+import RouteLoader from "@/components/RouteLoader";
 import Nav from "@/components/Nav";
 
 const bayon = Bayon({
@@ -47,6 +48,7 @@ export default function RootLayout({
     >
       <body className="grain font-sans antialiased">
         <IntroLoader />
+        <RouteLoader />
         <Nav />
         {children}
       </body>
