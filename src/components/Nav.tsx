@@ -9,6 +9,8 @@ import {
   FiX,
   FiThermometer,
   FiHeart,
+  FiUsers,
+  FiHome,
 } from "react-icons/fi";
 
 const SECTION_LINKS = [
@@ -18,6 +20,14 @@ const SECTION_LINKS = [
 ];
 
 const FEATURES = [
+  {
+    href: "/",
+    label: "Home",
+    desc: "Return to the landing page",
+    icon: <FiHome className="h-5 w-5" />,
+    color: "text-ink-600",
+    bg: "bg-ink-900/5",
+  },
   {
     href: "/heat-shield",
     label: "Heat Shield",
@@ -33,6 +43,14 @@ const FEATURES = [
     icon: <FiHeart className="h-5 w-5" />,
     color: "text-rose-500",
     bg: "bg-rose-50",
+  },
+  {
+    href: "/scholarship-finder",
+    label: "Youth Access Finder",
+    desc: "Map free programs and gear",
+    icon: <FiUsers className="h-5 w-5" />,
+    color: "text-indigo-500",
+    bg: "bg-indigo-50",
   },
 ];
 
