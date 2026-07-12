@@ -105,7 +105,46 @@ graph LR
    The client intercepts these chunks via the native `EventSource` API, parsing each line and instantly dropping a color-coded pin onto the live map.
 
 
-### **Features thinking of and will be built if time permits:**
+<br />
 
-*   **AED Gap Map:** A swarm that scrapes youth sports venues, schools, and public AED registries across a region to map which fields/gyms have a working, accessible AED — and flags the dangerous gaps for leagues to fix.
-*   **Youth Sports Access Finder:** Swarm-scrape every free/subsidized youth program, scholarship, adaptive-sports league, and equipment-donation drive across a region into one map matched to a family's location, budget, and their child's needs.
+---
+
+### **Feature: Youth Access Finder**
+Youth sports have become too expensive, pricing out millions of families. The tragedy is that funding and free gear actually exist, but the data is fragmented across thousands of messy local Parks & Rec sites, Pop Warner PDFs, and hidden foundation pages. 
+
+The **Youth Access Finder** is a centralized command center that uses Anakin AI to swarm the internet, extract hidden grants, and match users to hyper-local funding instantly.
+
+#### **Architectural Diagram**
+
+```mermaid
+graph LR
+    User([Next.js Client]) -->|1. Submit Zip, Sport, Needs| API[Zephyr Backend]
+    
+    subgraph Anakin AI Swarm
+        API -->|2. Find Local Leagues| Search[Anakin Search API]
+        API -->|3. Extract Deadlines| Crawl[Anakin Crawl/Scraper]
+        API -->|5. Watch Closed Grants| Monitor[Anakin Monitor]
+    end
+    
+    Crawl -->|4. Map & Action Feed| User
+    
+    Monitor -.->|6. Webhook: Status Change| API
+    API -.->|7. SMS/Push Alert| User
+    
+    style Search stroke:#ff6b00,stroke-width:3px
+    style Crawl stroke:#ff6b00,stroke-width:3px
+    style Monitor stroke:#ff6b00,stroke-width:3px
+```
+
+#### **How the Swarm works under the hood:**
+
+1. **Discovery (Anakin Search API):** 
+   Instead of manually hunting for clubs, the backend hits `POST https://anakin.io/v1/search`. We pass a dynamic query like `("youth football" OR "Pop Warner") AND "financial aid" AND "Austin, TX"`. Anakin Search returns the exact URLs of local leagues offering assistance.
+2. **Extraction (Anakin Crawl / Universal Scraper):**
+   The backend feeds those discovered URLs into `POST https://anakin.io/v1/wire/task` using Anakin's Universal Scraper wire. We provide a custom LLM instruction: *"Extract the income eligibility requirements, the exact deadline date, and the application link."* The messy websites are parsed and returned as clean JSON.
+3. **The Results Output:**
+   The Next.js client renders a map showing glowing pins for Open Scholarships (Purple) and Gear Drives (Green). The user sees a scrollable feed of tactical cards with 1-click "Apply Now" buttons linking directly to the forms Anakin found.
+4. **Automated Alerting (Anakin Monitor):**
+   If a highly coveted grant (like the NFL FLAG Winter League) is currently marked as "Closed," the user clicks a "🔔 Alert Me" button. The backend registers that specific URL with `POST https://anakin.io/v1/monitors`. 
+5. **The Magic Notification:**
+   Months later, the millisecond the local league updates their website to say *"Applications Open"*, Anakin Monitor fires a webhook to Zephyr. Zephyr instantly sends an SMS to the user: *"Zephyr Alert: Winter grants just opened in your area! Apply fast before funds run out."*
