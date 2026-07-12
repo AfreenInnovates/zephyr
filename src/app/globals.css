@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #f5f3ee;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--paper);
+  color: #171310;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Bayon is condensed - give big headings comfortable rhythm */
+.font-display {
+  letter-spacing: 0.01em;
+}
+
+/* Faint film-grain texture */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+.text-gradient-heat {
+  background: linear-gradient(96deg, #e0a80d 0%, #f2760c 45%, #e23a25 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Tactile card - soft shadow + hairline, lifts on hover */
+.tcard {
+  border-radius: 2rem;
+  border: 1px solid rgba(23, 19, 16, 0.08);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 18px 40px -24px rgba(23, 19, 16, 0.3);
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tcard-hover:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 32px 60px -28px rgba(23, 19, 16, 0.4);
+}
+
+/* Dark console card for the live map */
+.console-card {
+  background: radial-gradient(120% 120% at 80% 0%, #1a1610 0%, #100e0b 60%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2rem;
+  box-shadow: 0 40px 80px -30px rgba(23, 19, 16, 0.5);
+}
+
+.line-mask {
+  overflow: hidden;
+  display: block;
+}
+
+/* Odometer reel */
+.reel-window {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1;
+}
+.reel-column {
+  display: flex;
+  flex-direction: column;
+}
+.reel-column > span {
+  height: 1em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Intro letter reels — each letter rolls vertically through the alphabet */
+.intro-reel-window {
+  display: inline-block;
+  height: 1.25em;
+  overflow: hidden;
+  line-height: 1;
+  vertical-align: bottom;
+}
+.intro-reel-col {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+.intro-reel-col > span {
+  height: 1.25em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sweep map dots — pop in on discovery, cross-fade to their risk color */
+.sweep-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sweepPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transition: fill 0.5s ease;
+}
+@keyframes sweepPop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.sweep-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sweepPing 1.7s ease-out infinite;
+}
+@keyframes sweepPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+
+::selection {
+  background: #f2760c;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #eae6dc;
+}
+::-webkit-scrollbar-thumb {
+  background: #d3cabb;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #bdb19c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
